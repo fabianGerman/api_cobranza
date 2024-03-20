@@ -27,7 +27,7 @@ class Afiliado_Xeilon extends Model
                 'afsj.Baja as baja',
                 'afsj.Despedido as despedido',
                 'af.PlanVigente as plan_vigente',
-                'af.IdPlanes as id_plan'
+                'afsj.Monotributista as monotributista'
             )
             ->join('afiliadossj as afsj','afsj.IdAfiliadoSJ','=','af.IdAfiliadoSJ')
             ->join('planes as pl','pl.IdPlanes','=','af.IdPlanes')
@@ -109,10 +109,10 @@ class Afiliado_Xeilon extends Model
         return $result;
     }
 
-    public static function get_fecha_ingreso($idafiliado){   
+    public static function get_fecha_ingreso_egreso($idafiliado){   
         $result = DB::connection('xeilon')
             ->table('estadoafiliadosj as ea')
-            ->select('ea.FechaDesde as fechaIngreso')
+            ->select('ea.FechaDesde as fechaactivacion','ea.FechaHasta as fechainactivacion')
             ->join('afiliados as af', 'ea.IdAfiliadosj', '=', 'af.IdAfiliado')
             ->join('estados as e', 'ea.IdEstado', '=', 'e.IdEstado')
             ->where('ea.IdAfiliadosj', $idafiliado)

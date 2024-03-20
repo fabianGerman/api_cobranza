@@ -27,12 +27,12 @@ class CreateAfiliadosTable extends Migration
             $table->integer('monotributista')->nullable();
             $table->string('fecha_ingreso')->nullable();
             $table->string('fecha_inactivacion')->nullable();
-            $table->string('fecha_alta')->nullable();
-            $table->string('fecha_baja')->nullable();
             $table->integer('activo')->nullable();
             $table->integer('plan_vigente')->nullable();
             $table->integer('plan_actual')->nullable();
             $table->integer('plan_calculado')->nullable();
+            $table->integer('baja')->nullable();
+            $table->integer('despedido')->nullable();
             $table->timestamps();
         });
     }

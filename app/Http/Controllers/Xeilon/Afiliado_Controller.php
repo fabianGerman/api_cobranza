@@ -1,18 +1,19 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Xeilon;
 
 use Illuminate\Http\Request;
 use App\Models\Xeilon\Afiliado_Xeilon;
 use App\Models\Xeilon\Empresa_Xeilon;
 use App\Models\Cobranzas\Afiliado;
+use App\Http\Controllers\Controller;
 
 class Afiliado_Controller extends Controller
 {
     public function list_afiliados(){
         $xeilon = Afiliado_Xeilon::get_all_afiliados();
         $afiliados = $this->datos($xeilon);
-        $this->cargar_datos($afiliados);
+        //$this->cargar_datos($afiliados);
         return response()->json($afiliados);
     }
 
@@ -24,19 +25,42 @@ class Afiliado_Controller extends Controller
             $obra_social = Afiliado_Xeilon::get_obra_social($afiliado->id_afiliado_sj);
             $plan = Afiliado_Xeilon::get_plan($afiliado->id_afiliado_sj);
             $empresa = Empresa_Xeilon::get_empresa_by_afiliado($afiliado->id_afiliado_sj);
+            if ($obra_social != null) {
+                $afiliado->obra_social_id = $obra_social->idobrasocial;
+                $afiliado->obra_social_nro = $obra_social->nroobrasocial;
+                $afiliado->obra_social_razonsocial = $obra_social->razonsocial;
+                $afiliado->obra_social_siglas = $obra_social->siglas;
+                
+            } else {
+                $afiliado->obra_social_id = null;
+                $afiliado->obra_social_nro = null;
+                $afiliado->obras_ocial_razonsocial = null;
+                $afiliado->obra_social_siglas = null;
+            }
+
+            if ($plan != null) {
+                $afiliado->plan_id = $plan->idplan;
+                $afiliado->plan_nombre = $plan->nombreplan;
+            } else {
+                $afiliado->plan_id = 0;
+                $afiliado->plan_nombre = null;
+            }
+            if (count($empresa)) {
+                $afiliado->empresa_id = $empresa[0]->idempresasj;
+                $afiliado->empresa_cuit = $empresa[0]->cuit;
+                $afiliado->empresa_razon_social = $empresa[0]->razonsocial;
+                $afiliado->empresa_fecha_inicio = $empresa[0]->fechadesde;
+                $afiliado->empresa_fecha_hasta = $empresa[0]->fechahasta;
+            } else {
+                $afiliado->empresa_id = 0;
+                $afiliado->empresa_cuit = "-";
+                $afiliado->empresa_razon_social = "-";
+                $afiliado->empresa_fecha_inicio = "-";
+                $afiliado->empresa_fecha_hasta = "-";
+            }
+
             $afiliado->activo = $activo->activo;
             $afiliado->grupo_familiar = $grupo_familiar;
-            $afiliado->obra_social_id = $obra_social->idobrasocial;
-            $afiliado->obra_social_nro = $obra_social->nroobrasocial;
-            $afiliado->obra_social_razonsocial = $obra_social->razonsocial;
-            $afiliado->obra_social_siglas = $obra_social->siglas;
-            $afiliado->plan_id = $plan->idplan;
-            $afiliado->plan_nombre = $plan->nombreplan;
-            $afiliado->empresa_id = $empresa[0]->idempresasj;
-            $afiliado->empresa_cuit = $empresa[0]->cuit;
-            $afiliado->empresa_razon_social = $empresa[0]->razonsocial;
-            $afiliado->empresa_fecha_inicio = $empresa[0]->fechadesde;
-            $afiliado->empresa_fecha_hasta = $empresa[0]->fechahasta;
              
         }
 

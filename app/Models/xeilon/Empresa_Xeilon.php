@@ -13,6 +13,78 @@ class Empresa_Xeilon extends Model
     protected $connection = 'xeilon';
     protected $table = 'empresassj';
 
+    public static function get_count_afiliados_inconsistencia_by_empresa($cuit,$idempresasj,$periodo){
+        
+        $auxiliar = DB::connection('xeilon')
+        ->table('empresassj as emp')
+        ->where('emp.CUIT',$cuit)
+        ->select('emp.IdEmpresaSJ')
+        ->get();
+
+        $result = DB::connection('xeilon')
+            ->table('empresassj as emp')
+            ->leftJoin('afiliadossjempresas as ae',function($join){
+                $join->on('ae.IdEmpresaSJ','=','emp.IdEmpresaSJ')
+                ->where(function($query){
+                    $query->whereRaw('CAST(NOW() AS Date) >= ae.FechaDesde')
+                    ->whereRaw('CAST(NOW() AS Date) <= ae.FechaHasta OR ae.FechaHasta IS NULL');
+                });
+            })
+            ->join('afiliadossj as afsj','afsj.IdAfiliadoSJ','=','ae.IdAfiliadoSJ')
+            ->join('afiliados as af','af.IdAfiliadoSJ','=','afsj.IdAfiliadoSJ')
+            ->join('ctacteaportesafiliadossj as ctacte','ctacte.IdAfiliadoSJ','=','afsj.IdAfiliadoSJ')
+            ->where('ctacte.PeriodoAporte',$periodo)
+            ->where('ctacte.IdEmpresaSJ','<>',$idempresasj)
+            ->where('af.IdCaracter',1)
+            ->where('emp.CUIT',$cuit)
+            ->select("af.Nombres")
+            ->groupBy('af.Nombres')
+            ->get();
+
+        return $result;
+
+    }
+
+    public static function get_count_afiliados_titular_by_empresa($cuit){
+        $result = DB::connection('xeilon')
+            ->table('empresassj as emp')
+            ->leftJoin('afiliadossjempresas as ae',function($join){
+                $join->on('ae.IdEmpresaSJ','=','emp.IdEmpresaSJ')
+                ->where(function($query){
+                    $query->whereRaw('CAST(NOW() AS Date) >= ae.FechaDesde')
+                    ->whereRaw('CAST(NOW() AS Date) <= ae.FechaHasta OR ae.FechaHasta IS NULL');
+                });
+            })
+            ->join('afiliadossj as afsj','afsj.IdAfiliadoSJ','=','ae.IdAfiliadoSJ')
+            ->join('afiliados as af','af.IdAfiliadoSJ','=','afsj.IdAfiliadoSJ')
+            ->where('af.IdCaracter',1)
+            ->where('emp.CUIT',$cuit)
+            ->count();
+
+        return $result;
+
+    }
+
+    public static function get_count_afiliados_by_empresa($cuit){
+        $result = DB::connection('xeilon')
+            ->table('empresassj as emp')
+            ->leftJoin('afiliadossjempresas as ae',function($join){
+                $join->on('ae.IdEmpresaSJ','=','emp.IdEmpresaSJ')
+                ->where(function($query){
+                    $query->whereRaw('CAST(NOW() AS Date) >= ae.FechaDesde')
+                    ->whereRaw('CAST(NOW() AS Date) <= ae.FechaHasta OR ae.FechaHasta IS NULL');
+                });
+            })
+            ->join('afiliadossj as afsj','afsj.IdAfiliadoSJ','=','ae.IdAfiliadoSJ')
+            ->join('afiliados as af','af.IdAfiliadoSJ','=','afsj.IdAfiliadoSJ')
+            ->where('emp.CUIT',$cuit)
+            ->count();
+
+        return $result;
+
+    }
+
+
     public static function get_afiliados_by_empresa($cuit){
         
         $result = DB::connection('xeilon')
@@ -86,11 +158,14 @@ class Empresa_Xeilon extends Model
     }
 
     public static function search_empresa_by_cuit($cuit=null){
+
         $result = DB::connection('xeilon')
         ->table('empresassj as emp')
         ->where('emp.CUIT',$cuit)
         ->select('emp.RazonSocial as razonsocial','emp.CUIT as cuit','emp.IdEmpresaSJ as idempresasj')
         ->get();
+        
         return $result[0];
+
     }
 }

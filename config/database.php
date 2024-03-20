@@ -90,7 +90,7 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
         ],
-/*
+
         'xeilon' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -110,7 +110,7 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
-*/
+
     ],
 
     /*

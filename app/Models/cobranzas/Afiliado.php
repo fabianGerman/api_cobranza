@@ -24,12 +24,12 @@ class Afiliado extends Model
         'monotributista',
         'fecha_ingreso',
         'fecha_inactivacion',
-        'fecha_alta',
-        'fecha_baja',
         'activo',
         'plan_vigente',
         'plan_actual',
-        'plan_calculado'
+        'plan_calculado',
+        'despedido',
+        'baja'
     ];
 
     public function diferencia(){
