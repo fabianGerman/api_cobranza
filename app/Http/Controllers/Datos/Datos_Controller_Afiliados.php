@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Datos;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Xeilon\Afiliado_Xeilon;
+use App\Models\Xeilon\Empresa_Xeilon;
 use App\Models\Cobranzas\Afiliado;
 
 class Datos_Controller_Afiliados extends Controller
