@@ -45,4 +45,6 @@ class Afiliado extends Model
         ->get();
         return $result;
     }
+
+    
 }

@@ -3,9 +3,10 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Xeilon\Afiliado_Controller;
+use App\Http\Controllers\Xeilon\Plan_Controller;
 use App\Http\Controllers\Local\Afiliado_Controller_Local;
 use App\Http\Controllers\Datos\Datos_Controller_Empresas;
-
+use App\Http\Controllers\Datos\Datos_Controller_Plan;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,6 +27,9 @@ Route::get('/afiliados/local/list',[Afiliado_Controller_Local::class,'list_afili
 Route::get('/afiliados/test',[Datos_Controller::class,'tabla_afiliados']);
 
 Route::get('/empresas/test',[Datos_Controller_Empresas::class,'tabla_empresas']);
+
+Route::get('/planes/list',[Datos_Controller_Plan::class,'tabla_plan']);
+Route::get('/planes/search',[Plan_Controller::class,'get_plan']);
 
 /*
 DB_CONNECTION=pgsql
