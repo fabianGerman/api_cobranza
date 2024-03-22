@@ -7,18 +7,21 @@ use Illuminate\Http\Request;
 use App\Models\Xeilon\Afiliado_Xeilon;
 use App\Models\Xeilon\Empresa_Xeilon;
 use App\Models\Cobranzas\Afiliado;
+use App\Models\Cobranzas\Plan;
 
 class Datos_Controller_Afiliados extends Controller
 {
     public function tabla_afiliados(){
         $xeilon = Afiliado_Xeilon::get_all_afiliados();
         $afiliados = $this->procesar_datos_afiliados($xeilon);
-        $this->cargar_datos_afiliados($afiliados);
+        
+        //$this->cargar_datos_afiliados($afiliados);
         $mensaje = "prueba realizada";
         return response()->json($mensaje);
     }
 
     public function procesar_datos_afiliados($afiliados){
+        
         foreach($afiliados as $afiliado){
            
             $activo = Afiliado_Xeilon::get_estado_actual($afiliado->id_afiliado_sj);
@@ -27,7 +30,7 @@ class Datos_Controller_Afiliados extends Controller
             $plan = Afiliado_Xeilon::get_plan($afiliado->id_afiliado_sj);
             $empresa = Empresa_Xeilon::get_empresa_by_afiliado($afiliado->id_afiliado_sj);
             $fecha = Afiliado_Xeilon::get_fecha_ingreso_egreso($afiliado->id_afiliado_sj);
-
+            
             if ($obra_social != null) {
                 $afiliado->obra_social_id = $obra_social->idobrasocial;
                 $afiliado->obra_social_nro = $obra_social->nroobrasocial;
@@ -44,6 +47,10 @@ class Datos_Controller_Afiliados extends Controller
             if ($plan != null) {
                 $afiliado->plan_id = $plan->idplan;
                 $afiliado->plan_nombre = $plan->nombreplan;
+
+                $percapita = Plan::get_plan($afiliado->plan_id);
+            
+                $afiliado->plan_calculado = $percapita;
             } else {
                 $afiliado->plan_id = 0;
                 $afiliado->plan_nombre = null;
@@ -54,12 +61,14 @@ class Datos_Controller_Afiliados extends Controller
                 $afiliado->empresa_id = null;
             }
 
+            $planes = Plan::get_all_planes($afiliado->plan_id);
+
             $afiliado->activo = $activo->activo;
             $afiliado->grupo_familiar = $grupo_familiar;
             $afiliado->fecha_activacion = $fecha->fechaactivacion;
             $afiliado->fecha_inactivacion = $fecha->fechainactivacion;
         }
-
+     
         return $afiliados;
     }
 

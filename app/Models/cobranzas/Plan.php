@@ -4,6 +4,7 @@ namespace App\Models\cobranzas;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Plan extends Model
 {
@@ -116,5 +117,18 @@ class Plan extends Model
  
         return $po;
     
+    }
+
+    public static function get_all_planes(){
+        $result = DB::table('plans as pl')
+            ->get();
+        return $result;
+    }
+
+    public static function get_plan($idplan){
+        $result = DB::table('plans as pl')
+            ->where('pl.id_plan',$idplan)
+            ->get();
+        return $result[0]->percapita;
     }
 }

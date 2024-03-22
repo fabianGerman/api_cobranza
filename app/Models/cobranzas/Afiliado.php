@@ -42,9 +42,8 @@ class Afiliado extends Model
 
     public static function list_all_afiliados(){
         $result = DB::table('afiliados as af')
-        ->get();
+        ->paginate(1);
         return $result;
     }
 
-    
 }
